@@ -35,8 +35,17 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   return <Ctx.Provider value={{ theme, setTheme, toggleTheme }}>{children}</Ctx.Provider>;
 };
 
-export const useTheme = () => {
+export const useTheme = (): ThemeCtx => {
   const c = useContext(Ctx);
-  if (!c) throw new Error('useTheme must be used within ThemeProvider');
-  return c;
+  if (c) return c;
+  // Fallback for cases where component renders outside provider (e.g., HMR)
+  return {
+    theme: 'light',
+    setTheme: () => {},
+    toggleTheme: () => {
+      const root = document.documentElement;
+      const isDark = root.classList.toggle('dark');
+      try { localStorage.setItem('horeca-theme', isDark ? 'dark' : 'light'); } catch {}
+    },
+  };
 };
