@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Smartphone, Tablet, ChefHat, LayoutDashboard, Languages, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Index = () => {
   const { lang, setLang, tr } = useI18n();
@@ -27,9 +28,12 @@ const Index = () => {
               <div className="text-xs text-muted-foreground mt-0.5">v1.0 · MVP</div>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')}>
-            <Languages className="h-4 w-4 mr-2" />{lang.toUpperCase()}
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle variant="ghost" size="sm" />
+            <Button variant="ghost" size="sm" onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')}>
+              <Languages className="h-4 w-4 mr-2" />{lang.toUpperCase()}
+            </Button>
+          </div>
         </div>
       </header>
 

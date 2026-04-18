@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 interface Props {
   title: string;
@@ -29,14 +30,17 @@ export const ZoneHeader = ({ title, subtitle, zone, variant = 'light' }: Props) 
             {subtitle && <p className="text-xs text-muted-foreground hidden md:block">{subtitle}</p>}
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')}
-          className={dark ? 'text-sidebar-foreground hover:bg-sidebar-accent' : ''}
-        >
-          <Languages className="h-4 w-4 mr-1" />{lang.toUpperCase()}
-        </Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle variant="ghost" size="sm" className={dark ? 'text-sidebar-foreground hover:bg-sidebar-accent' : ''} />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')}
+            className={dark ? 'text-sidebar-foreground hover:bg-sidebar-accent' : ''}
+          >
+            <Languages className="h-4 w-4 mr-1" />{lang.toUpperCase()}
+          </Button>
+        </div>
       </div>
     </header>
   );
