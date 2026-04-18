@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { useI18n } from '@/lib/i18n';
 import { dishes as initialDishes, categories as initialCategories, staff, fmtUAH } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
+import { PinSetup } from '@/components/PinSetup';
 import { toast } from 'sonner';
 
 const Admin = () => {
@@ -177,6 +178,9 @@ const Admin = () => {
                 <Switch />
               </div>
               <Button className="w-full">{tr.save}</Button>
+            </div>
+            <div className="max-w-xl mt-6 bg-card border border-border rounded-2xl p-6">
+              <PinSetup />
             </div>
           </TabsContent>
         </Tabs>

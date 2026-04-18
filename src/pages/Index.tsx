@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Smartphone, Tablet, ChefHat, LayoutDashboard, Languages, ArrowRight } from 'lucide-react';
+import { Smartphone, Tablet, ChefHat, LayoutDashboard, Languages, ArrowRight, LogIn, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuth } from '@/lib/auth';
 
 const Index = () => {
   const { lang, setLang, tr } = useI18n();
+  const { user, signOut } = useAuth();
 
   const zones = [
     { to: '/customer', icon: Smartphone, title: tr.customer, desc: tr.customerDesc, role: 'CUSTOMER', accent: 'from-orange-400 to-rose-500' },
@@ -33,6 +35,15 @@ const Index = () => {
             <Button variant="ghost" size="sm" onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')}>
               <Languages className="h-4 w-4 mr-2" />{lang.toUpperCase()}
             </Button>
+            {user ? (
+              <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                <LogOut className="h-4 w-4 mr-2" />{lang === 'ua' ? 'Вихід' : 'Sign out'}
+              </Button>
+            ) : (
+              <Button asChild size="sm" variant="default">
+                <Link to="/auth"><LogIn className="h-4 w-4 mr-2" />{lang === 'ua' ? 'Вхід персоналу' : 'Staff sign in'}</Link>
+              </Button>
+            )}
           </div>
         </div>
       </header>
