@@ -1,9 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Languages, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Languages, LogOut, LayoutGrid, ChefHat, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useAuth } from '@/lib/auth';
+import { useAuth, canAccessZone } from '@/lib/auth';
 import { toast } from 'sonner';
 
 interface Props {
@@ -15,9 +15,16 @@ interface Props {
 
 export const ZoneHeader = ({ title, subtitle, zone, variant = 'light' }: Props) => {
   const { lang, setLang, tr } = useI18n();
-  const { user, signOut } = useAuth();
+  const { user, roles, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const dark = variant === 'dark';
+
+  const zoneLinks = [
+    { to: '/waiter', key: 'waiter' as const, label: lang === 'ua' ? 'Зал' : 'Floor', Icon: LayoutGrid },
+    { to: '/kitchen', key: 'kitchen' as const, label: lang === 'ua' ? 'Кухня' : 'Kitchen', Icon: ChefHat },
+    { to: '/admin', key: 'admin' as const, label: 'Admin', Icon: Shield },
+  ].filter(z => canAccessZone(z.key, roles));
   const handleLogout = async () => {
     await signOut();
     toast.success(lang === 'ua' ? 'Вихід виконано' : 'Signed out');
@@ -40,6 +47,28 @@ export const ZoneHeader = ({ title, subtitle, zone, variant = 'light' }: Props) 
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {user && zoneLinks.length > 1 && (
+            <div className={`hidden md:flex items-center gap-1 mr-2 p-1 rounded-lg ${dark ? 'bg-sidebar-accent' : 'bg-secondary'}`}>
+              {zoneLinks.map(({ to, label, Icon }) => {
+                const active = location.pathname === to;
+                return (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                      active
+                        ? 'bg-accent text-accent-foreground shadow-sm'
+                        : dark
+                          ? 'text-sidebar-foreground/70 hover:text-sidebar-foreground'
+                          : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />{label}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
           <ThemeToggle variant="ghost" size="sm" className={dark ? 'text-sidebar-foreground hover:bg-sidebar-accent' : ''} />
           <Button
             variant="ghost"
