@@ -93,6 +93,11 @@ export type Database = {
       }
     }
     Functions: {
+      admin_clear_user_pin: { Args: { _user_id: string }; Returns: undefined }
+      admin_set_user_pin: {
+        Args: { _pin: string; _user_id: string }
+        Returns: undefined
+      }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
