@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { useI18n } from '@/lib/i18n';
-import { dishes as initialDishes, categories as initialCategories, staff, fmtUAH } from '@/lib/mockData';
+import { dishes as initialDishes, categories as initialCategories, fmtUAH } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
 import { PinSetup } from '@/components/PinSetup';
+import { StaffManager } from '@/components/StaffManager';
 import { toast } from 'sonner';
 
 const Admin = () => {
@@ -113,43 +114,7 @@ const Admin = () => {
 
           {/* STAFF */}
           <TabsContent value="staff" className="space-y-4 animate-fade-in">
-            <div className="flex justify-between items-center">
-              <h3 className="font-display font-bold text-xl">{tr.staff} · {staff.length}</h3>
-              <Button><Plus className="h-4 w-4 mr-1" />{lang === 'ua' ? 'Додати' : 'Add'}</Button>
-            </div>
-            <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{tr.name}</TableHead>
-                    <TableHead>{tr.role}</TableHead>
-                    <TableHead>{tr.email}</TableHead>
-                    <TableHead>{tr.shift}</TableHead>
-                    <TableHead className="text-right">{tr.actions}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {staff.map(s => (
-                    <TableRow key={s.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full bg-gradient-warm flex items-center justify-center text-accent-foreground font-bold text-sm">
-                            {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                          </div>
-                          <span className="font-semibold">{s.name}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell><span className="text-xs px-2 py-1 rounded-full bg-accent/15 text-accent font-semibold">{s.role}</span></TableCell>
-                      <TableCell className="text-muted-foreground text-sm">{s.email}</TableCell>
-                      <TableCell>{s.shift}</TableCell>
-                      <TableCell className="text-right">
-                        <Button size="icon" variant="ghost" className="h-8 w-8"><Edit3 className="h-3 w-3" /></Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <StaffManager />
           </TabsContent>
 
           {/* SETTINGS */}

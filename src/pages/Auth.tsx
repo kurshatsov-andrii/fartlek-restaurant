@@ -62,8 +62,14 @@ const Auth = () => {
     setBusy(true);
     const { error } = await signUp(ve.data, vp.data, vn.data, suRole);
     setBusy(false);
-    if (error) toast.error(error);
-    else toast.success(ua ? 'Акаунт створено. Увійдіть.' : 'Account created. Sign in.');
+    if (error) return toast.error(error);
+    // Auto sign-in right after sign-up (email auto-confirm is enabled)
+    const { error: signErr } = await signIn(ve.data, vp.data);
+    if (signErr) {
+      toast.success(ua ? 'Акаунт створено. Увійдіть.' : 'Account created. Sign in.');
+    } else {
+      toast.success(ua ? 'Акаунт створено. Вхід виконано.' : 'Account created. Signed in.');
+    }
   };
 
   const handlePin = async (e: React.FormEvent) => {
