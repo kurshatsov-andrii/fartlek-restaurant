@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { LayoutDashboard, UtensilsCrossed, Users, Settings, TrendingUp, ShoppingBag, Wallet, Star, Plus, Trash2, Edit3 } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, Users, Settings, TrendingUp, ShoppingBag, Wallet, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { useI18n } from '@/lib/i18n';
-import { dishes as initialDishes, categories as initialCategories, fmtUAH } from '@/lib/mockData';
+import { dishes as initialDishes, fmtUAH } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
 import { PinSetup } from '@/components/PinSetup';
 import { StaffManager } from '@/components/StaffManager';
+import { MenuBuilder } from '@/components/MenuBuilder';
 import { toast } from 'sonner';
 
 const Admin = () => {
@@ -69,47 +69,8 @@ const Admin = () => {
           </TabsContent>
 
           {/* MENU BUILDER */}
-          <TabsContent value="menu" className="space-y-4 animate-fade-in">
-            <div className="flex flex-wrap gap-2 items-center justify-between">
-              <div className="flex flex-wrap gap-2">
-                {initialCategories.map(c => (
-                  <span key={c.id} className="px-3 py-1.5 rounded-full bg-secondary text-sm font-semibold">{c.name[lang]}</span>
-                ))}
-                <Button size="sm" variant="outline"><Plus className="h-3 w-3 mr-1" />{tr.addCategory}</Button>
-              </div>
-              <Button onClick={() => toast.info(tr.addDish)}><Plus className="h-4 w-4 mr-1" />{tr.addDish}</Button>
-            </div>
-
-            <div className="bg-card border border-border rounded-2xl overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead></TableHead>
-                    <TableHead>{tr.name}</TableHead>
-                    <TableHead>{lang === 'ua' ? 'Категорія' : 'Category'}</TableHead>
-                    <TableHead className="text-right">{tr.price}</TableHead>
-                    <TableHead className="text-right">{tr.actions}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {dishes.map(d => (
-                    <TableRow key={d.id}>
-                      <TableCell className="text-2xl">{d.emoji}</TableCell>
-                      <TableCell>
-                        <div className="font-semibold">{d.name[lang]}</div>
-                        <div className="text-xs text-muted-foreground">{d.description[lang]}</div>
-                      </TableCell>
-                      <TableCell><span className="text-xs px-2 py-1 rounded-full bg-secondary">{initialCategories.find(c => c.id === d.category)?.name[lang]}</span></TableCell>
-                      <TableCell className="text-right font-bold">{fmtUAH(d.price)}</TableCell>
-                      <TableCell className="text-right">
-                        <Button size="icon" variant="ghost" className="h-8 w-8"><Edit3 className="h-3 w-3" /></Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => setDishes(ds => ds.filter(x => x.id !== d.id))}><Trash2 className="h-3 w-3" /></Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+          <TabsContent value="menu" className="animate-fade-in">
+            <MenuBuilder />
           </TabsContent>
 
           {/* STAFF */}
