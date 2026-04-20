@@ -193,7 +193,7 @@ export const MenuBuilder = () => {
         </Button>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -241,7 +241,7 @@ export const MenuBuilder = () => {
 
       {/* Dish dialog */}
       <Dialog open={dishOpen} onOpenChange={setDishOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg w-[calc(100vw-1.5rem)] max-h-[92vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-display">
               {editing ? tr.edit : tr.addDish} {editing && `· ${editing.name[lang]}`}
@@ -299,7 +299,7 @@ export const MenuBuilder = () => {
 
       {/* Category dialog */}
       <Dialog open={catOpen} onOpenChange={setCatOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md w-[calc(100vw-1.5rem)]">
           <DialogHeader>
             <DialogTitle className="font-display">{tr.addCategory}</DialogTitle>
           </DialogHeader>

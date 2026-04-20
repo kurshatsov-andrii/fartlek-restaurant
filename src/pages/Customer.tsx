@@ -36,7 +36,7 @@ const Customer = () => {
     <div className="min-h-screen bg-background pb-28">
       <ZoneHeader zone="GUEST" title={`${tr.yourTable} · №${tableNo}`} subtitle="QR Menu" />
 
-      <div className="max-w-md mx-auto px-4 pt-6">
+      <div className="max-w-2xl mx-auto px-4 pt-6">
         <Tabs defaultValue="menu" className="w-full">
           <TabsList className="grid grid-cols-2 w-full mb-5 bg-muted">
             <TabsTrigger value="menu">{tr.menu}</TabsTrigger>
