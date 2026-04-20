@@ -66,9 +66,27 @@ const Waiter = () => {
         ))}
       </div>
 
-      {/* Floor plan */}
+      {/* Floor plan — grid on mobile, absolute positioning on md+ */}
       <div className="p-4 md:p-8">
-        <div className="relative bg-card border-2 border-dashed border-border rounded-3xl p-6 min-h-[600px]" style={{ backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+        {/* Mobile: simple grid */}
+        <div className="md:hidden grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {tables.map(t => (
+            <button
+              key={t.id}
+              onClick={() => openTable(t)}
+              className={`border-2 transition-all active:scale-95 ${statusColors[t.status]} ${t.shape === 'round' ? 'rounded-full aspect-square' : 'rounded-xl aspect-[4/3]'} flex flex-col items-center justify-center font-bold p-2 min-h-[110px]`}
+            >
+              <div className="font-display text-2xl leading-none">№{t.id}</div>
+              <div className="flex items-center gap-1 text-xs mt-1 opacity-80">
+                <Users className="h-3 w-3" />{t.guests || t.seats}
+              </div>
+              {t.total && <div className="text-[10px] font-mono mt-0.5">{fmtUAH(t.total)}</div>}
+            </button>
+          ))}
+        </div>
+
+        {/* Tablet/Desktop: absolute floor plan */}
+        <div className="hidden md:block relative bg-card border-2 border-dashed border-border rounded-3xl p-6 min-h-[600px]" style={{ backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
           <div className="absolute top-4 left-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">{lang === 'ua' ? 'Зал · Поверх 1' : 'Hall · Floor 1'}</div>
           {tables.map(t => (
             <button
@@ -94,11 +112,11 @@ const Waiter = () => {
 
       {/* Table dialog */}
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
+        <DialogContent className="max-w-3xl w-[calc(100vw-1.5rem)] max-h-[92vh] overflow-auto p-4 md:p-6">
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="font-display text-2xl flex items-center gap-3">
+                <DialogTitle className="font-display text-xl md:text-2xl flex items-center gap-3 flex-wrap">
                   {tr.table} №{selected.id}
                   <span className={`text-xs px-2 py-1 rounded-full border-2 ${statusColors[selected.status]}`}>{tr[selected.status]}</span>
                 </DialogTitle>

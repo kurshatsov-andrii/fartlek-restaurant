@@ -23,12 +23,14 @@ const Admin = () => {
 
       <div className="p-4 md:p-8">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="dashboard"><LayoutDashboard className="h-4 w-4 mr-2" />{tr.dashboard}</TabsTrigger>
-            <TabsTrigger value="menu"><UtensilsCrossed className="h-4 w-4 mr-2" />{tr.menuBuilder}</TabsTrigger>
-            <TabsTrigger value="staff"><Users className="h-4 w-4 mr-2" />{tr.staff}</TabsTrigger>
-            <TabsTrigger value="settings"><Settings className="h-4 w-4 mr-2" />{tr.settings}</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto -mx-4 px-4 mb-6 scrollbar-hide">
+            <TabsList className="inline-flex w-auto min-w-full md:min-w-0">
+              <TabsTrigger value="dashboard"><LayoutDashboard className="h-4 w-4 mr-2" /><span className="whitespace-nowrap">{tr.dashboard}</span></TabsTrigger>
+              <TabsTrigger value="menu"><UtensilsCrossed className="h-4 w-4 mr-2" /><span className="whitespace-nowrap">{tr.menuBuilder}</span></TabsTrigger>
+              <TabsTrigger value="staff"><Users className="h-4 w-4 mr-2" /><span className="whitespace-nowrap">{tr.staff}</span></TabsTrigger>
+              <TabsTrigger value="settings"><Settings className="h-4 w-4 mr-2" /><span className="whitespace-nowrap">{tr.settings}</span></TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* DASHBOARD */}
           <TabsContent value="dashboard" className="space-y-6 animate-fade-in">

@@ -131,8 +131,8 @@ export const StaffManager = () => {
         </Button>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
-        <Table>
+      <div className="bg-card border border-border rounded-2xl overflow-x-auto">
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow>
               <TableHead>{ua ? "Ім'я" : 'Name'}</TableHead>

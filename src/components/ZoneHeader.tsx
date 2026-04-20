@@ -65,12 +65,12 @@ export const ZoneHeader = ({ title, subtitle, zone, variant: _v = 'light' }: Pro
               })}
             </div>
           )}
-          <Button variant="ghost" size="sm" onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')} className="text-muted-foreground hover:text-gold">
-            <Languages className="h-4 w-4 mr-1" />{lang.toUpperCase()}
+          <Button variant="ghost" size="sm" onClick={() => setLang(lang === 'ua' ? 'en' : 'ua')} className="text-muted-foreground hover:text-gold px-2 sm:px-3">
+            <Languages className="h-4 w-4 sm:mr-1" /><span className="hidden sm:inline">{lang.toUpperCase()}</span>
           </Button>
           {user && (
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-gold">
-              <LogOut className="h-4 w-4 mr-1" />{lang === 'ua' ? 'Вихід' : 'Sign out'}
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-gold px-2 sm:px-3">
+              <LogOut className="h-4 w-4 sm:mr-1" /><span className="hidden sm:inline">{lang === 'ua' ? 'Вихід' : 'Sign out'}</span>
             </Button>
           )}
         </div>

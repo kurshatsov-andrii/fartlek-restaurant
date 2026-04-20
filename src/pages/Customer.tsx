@@ -36,7 +36,7 @@ const Customer = () => {
     <div className="min-h-screen bg-background pb-28">
       <ZoneHeader zone="GUEST" title={`${tr.yourTable} · №${tableNo}`} subtitle="QR Menu" />
 
-      <div className="max-w-md mx-auto px-4 pt-6">
+      <div className="max-w-2xl mx-auto px-4 pt-6">
         <Tabs defaultValue="menu" className="w-full">
           <TabsList className="grid grid-cols-2 w-full mb-5 bg-muted">
             <TabsTrigger value="menu">{tr.menu}</TabsTrigger>
@@ -101,10 +101,10 @@ const Customer = () => {
       {cartCount > 0 && (
         <Sheet>
           <SheetTrigger asChild>
-            <Button className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full h-14 px-6 shadow-hover bg-gradient-gold text-primary-foreground hover:opacity-90 z-50">
-              <ShoppingBag className="h-5 w-5 mr-2" />
-              <span className="font-semibold">{tr.cart} · {cartCount}</span>
-              <span className="ml-3 pl-3 border-l border-primary-foreground/30 font-bold">{fmtUAH(total)}</span>
+            <Button className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full h-14 px-5 sm:px-6 shadow-hover bg-gradient-gold text-primary-foreground hover:opacity-90 z-50 max-w-[calc(100vw-2rem)]">
+              <ShoppingBag className="h-5 w-5 mr-2 flex-shrink-0" />
+              <span className="font-semibold whitespace-nowrap">{tr.cart} · {cartCount}</span>
+              <span className="ml-3 pl-3 border-l border-primary-foreground/30 font-bold whitespace-nowrap">{fmtUAH(total)}</span>
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-auto bg-card border-border">

@@ -37,22 +37,22 @@ const Index = () => {
       </header>
 
       {/* Hero */}
-      <section className="container py-16 md:py-24">
+      <section className="container py-12 sm:py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bordeaux-dark border border-gold/30 mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bordeaux-dark border border-gold/30 mb-6 md:mb-8">
             <Sparkles className="h-3 w-3 text-gold" />
-            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-light">
+            <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase text-gold-light">
               {ua ? 'Преміум · Ресторанна ОС' : 'Premium · Restaurant OS'}
             </span>
           </div>
-          <h1 className="font-display font-bold leading-[1.05] tracking-tight text-balance">
+          <h1 className="font-display font-bold leading-[1.05] tracking-tight text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
             {ua ? (
               <>Вишуканий сервіс.<br /><span className="text-gold">Бездоганна робота.</span></>
             ) : (
               <>Refined service.<br /><span className="text-gold">Flawless operations.</span></>
             )}
           </h1>
-          <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 md:mt-8 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {ua
               ? 'Цифрова платформа для закладів преміум-класу: меню, столи, кухня, аналітика — в єдиному просторі.'
               : 'A digital platform for premium venues: menu, tables, kitchen and analytics — unified.'}
@@ -60,7 +60,7 @@ const Index = () => {
         </div>
 
         {/* Two entry points */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="mt-10 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
           {/* Customer */}
           <Link
             to="/customer"
