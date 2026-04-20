@@ -36,8 +36,8 @@ const Kitchen = () => {
   const minsAgo = (ts: number) => Math.floor((Date.now() - ts) / 60_000);
 
   return (
-    <div className="min-h-screen bg-sidebar text-sidebar-foreground">
-      <ZoneHeader zone="KITCHEN" title="KDS · Kitchen Display" subtitle={`${orders.length} active`} variant="dark" />
+    <div className="min-h-screen bg-background">
+      <ZoneHeader zone="KITCHEN" title="KDS · Kitchen Display" subtitle={`${orders.length} active`} />
 
       <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         {columns.map(col => {

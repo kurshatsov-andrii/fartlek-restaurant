@@ -1,128 +1,144 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Dark Luxury HoReCa design system
+  60% — onyx base (#0F0F10 / #1A1A1D / #26262A)
+  30% — bordeaux surfaces (#4A0F1C / #6A1B2B / #8C2F3F)
+  10% — gold accent (#C9A14A / #E5C469 / #A8832F)
+*/
+
 @layer base {
   :root {
-    --background: 40 30% 97%;
-    --foreground: 24 15% 12%;
+    /* Surfaces */
+    --background: 240 4% 6%;          /* #0F0F10 */
+    --foreground: 0 0% 100%;          /* #FFFFFF */
 
-    --card: 0 0% 100%;
-    --card-foreground: 24 15% 12%;
+    --card: 240 5% 9%;                /* #18181B */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 24 15% 12%;
+    --popover: 240 4% 11%;            /* #1A1A1D */
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 24 15% 12%;
-    --primary-foreground: 40 30% 97%;
+    /* Gold accent → primary CTA */
+    --primary: 42 53% 54%;            /* #C9A14A */
+    --primary-foreground: 240 5% 9%;
 
-    --secondary: 36 20% 92%;
-    --secondary-foreground: 24 15% 12%;
+    /* Bordeaux surfaces (30%) */
+    --secondary: 350 65% 18%;         /* #4A0F1C */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 36 18% 94%;
-    --muted-foreground: 24 8% 45%;
+    --muted: 240 4% 15%;              /* #222226 */
+    --muted-foreground: 240 5% 65%;   /* #A1A1AA */
 
-    --accent: 30 95% 55%;
-    --accent-foreground: 24 15% 12%;
+    --accent: 42 53% 54%;             /* gold */
+    --accent-foreground: 240 5% 9%;
 
-    --success: 145 55% 42%;
-    --success-foreground: 0 0% 100%;
+    --bordeaux: 350 58% 26%;          /* #6A1B2B */
+    --bordeaux-light: 350 50% 37%;    /* #8C2F3F */
+    --bordeaux-dark: 350 65% 18%;     /* #4A0F1C */
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 24 15% 12%;
-
-    --destructive: 0 75% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
-    --ring: 30 95% 55%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 24 15% 10%;
-    --sidebar-foreground: 40 20% 88%;
-    --sidebar-primary: 30 95% 55%;
-    --sidebar-primary-foreground: 24 15% 10%;
-    --sidebar-accent: 24 12% 16%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 24 12% 18%;
-    --sidebar-ring: 30 95% 55%;
-
-    --gradient-warm: linear-gradient(135deg, hsl(30 95% 55%) 0%, hsl(15 85% 55%) 100%);
-    --gradient-dark: linear-gradient(135deg, hsl(24 15% 12%) 0%, hsl(24 18% 18%) 100%);
-    --shadow-elegant: 0 10px 40px -15px hsl(24 15% 12% / 0.2);
-    --shadow-glow: 0 0 30px hsl(30 95% 55% / 0.25);
-  }
-
-  .dark {
-    --background: 24 15% 8%;
-    --foreground: 40 20% 95%;
-
-    --card: 24 15% 11%;
-    --card-foreground: 40 20% 95%;
-
-    --popover: 24 15% 11%;
-    --popover-foreground: 40 20% 95%;
-
-    --primary: 30 95% 55%;
-    --primary-foreground: 24 15% 10%;
-
-    --secondary: 24 12% 16%;
-    --secondary-foreground: 40 20% 95%;
-
-    --muted: 24 12% 14%;
-    --muted-foreground: 40 10% 60%;
-
-    --accent: 30 95% 55%;
-    --accent-foreground: 24 15% 10%;
+    --gold: 42 53% 54%;
+    --gold-light: 44 72% 65%;         /* #E5C469 */
+    --gold-dark: 40 57% 42%;          /* #A8832F */
 
     --success: 145 55% 50%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 55%;
-    --warning-foreground: 24 15% 10%;
+    --warning-foreground: 240 5% 9%;
 
-    --destructive: 0 75% 55%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 24 12% 20%;
-    --input: 24 12% 20%;
-    --ring: 30 95% 55%;
+    --border: 240 4% 18%;
+    --input: 240 4% 14%;
+    --ring: 42 53% 54%;
 
-    --sidebar-background: 24 15% 6%;
-    --sidebar-foreground: 40 20% 88%;
-    --sidebar-primary: 30 95% 55%;
-    --sidebar-primary-foreground: 24 15% 10%;
-    --sidebar-accent: 24 12% 12%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 24 12% 14%;
-    --sidebar-ring: 30 95% 55%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 240 4% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 42 53% 54%;
+    --sidebar-primary-foreground: 240 5% 9%;
+    --sidebar-accent: 240 4% 11%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 42 53% 54%;
+
+    /* Premium gradients & shadows */
+    --gradient-bordeaux: linear-gradient(135deg, hsl(350 65% 18%) 0%, hsl(350 50% 32%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(40 57% 42%) 0%, hsl(44 72% 65%) 100%);
+    --gradient-onyx: linear-gradient(180deg, hsl(240 5% 9%) 0%, hsl(240 4% 6%) 100%);
+    --gradient-hero: radial-gradient(ellipse at top, hsl(350 65% 18% / 0.6) 0%, hsl(240 4% 6%) 60%);
+
+    --shadow-1: 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-2: 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-hover: 0 12px 32px rgba(0,0,0,0.5);
+    --shadow-gold: 0 0 32px hsl(42 53% 54% / 0.25);
   }
+
+  /* Dark mode keeps the same luxury palette */
+  .dark { color-scheme: dark; }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+
+  html { color-scheme: dark; }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv11', 'ss01';
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: 'Sora', system-ui, sans-serif;
     letter-spacing: -0.02em;
+    line-height: 1.1;
   }
+
+  h1 { @apply text-4xl md:text-5xl font-bold; }
+  h2 { @apply text-3xl md:text-4xl font-bold; }
+  h3 { @apply text-2xl md:text-3xl font-semibold; }
+
+  ::selection { background: hsl(var(--gold) / 0.35); color: hsl(var(--foreground)); }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--bordeaux)); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--bordeaux-light)); }
 }
 
 @layer utilities {
-  .bg-gradient-warm { background: var(--gradient-warm); }
-  .bg-gradient-dark { background: var(--gradient-dark); }
-  .shadow-elegant { box-shadow: var(--shadow-elegant); }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .bg-gradient-bordeaux { background: var(--gradient-bordeaux); }
+  .bg-gradient-gold { background: var(--gradient-gold); }
+  .bg-gradient-onyx { background: var(--gradient-onyx); }
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .shadow-1 { box-shadow: var(--shadow-1); }
+  .shadow-2 { box-shadow: var(--shadow-2); }
+  .shadow-hover { box-shadow: var(--shadow-hover); }
+  .shadow-gold { box-shadow: var(--shadow-gold); }
+
+  .text-gold { color: hsl(var(--gold)); }
+  .text-gold-light { color: hsl(var(--gold-light)); }
+  .border-gold { border-color: hsl(var(--gold)); }
+  .bg-bordeaux { background-color: hsl(var(--bordeaux)); }
+  .bg-bordeaux-dark { background-color: hsl(var(--bordeaux-dark)); }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { scrollbar-width: none; }
+
+  .text-balance { text-wrap: balance; }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.5), transparent);
+  }
 }
