@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { useAuth, roleToZone, AppRole } from '@/lib/auth';
 import { useI18n } from '@/lib/i18n';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 const emailSchema = z.string().trim().email().max(255);
 const pwdSchema = z.string().min(6).max(72);
@@ -36,9 +35,7 @@ const Auth = () => {
   const [pin, setPin] = useState('');
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate(redirect || roleToZone(roles), { replace: true });
-    }
+    if (!loading && user) navigate(redirect || roleToZone(roles), { replace: true });
   }, [user, roles, loading, redirect, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -49,8 +46,7 @@ const Auth = () => {
     setBusy(true);
     const { error } = await signIn(ve.data, vp.data);
     setBusy(false);
-    if (error) toast.error(error);
-    else toast.success(ua ? 'Вхід успішний' : 'Signed in');
+    if (error) toast.error(error); else toast.success(ua ? 'Вхід успішний' : 'Signed in');
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -63,13 +59,9 @@ const Auth = () => {
     const { error } = await signUp(ve.data, vp.data, vn.data, suRole);
     setBusy(false);
     if (error) return toast.error(error);
-    // Auto sign-in right after sign-up (email auto-confirm is enabled)
     const { error: signErr } = await signIn(ve.data, vp.data);
-    if (signErr) {
-      toast.success(ua ? 'Акаунт створено. Увійдіть.' : 'Account created. Sign in.');
-    } else {
-      toast.success(ua ? 'Акаунт створено. Вхід виконано.' : 'Account created. Signed in.');
-    }
+    if (signErr) toast.success(ua ? 'Акаунт створено. Увійдіть.' : 'Account created. Sign in.');
+    else toast.success(ua ? 'Акаунт створено. Вхід виконано.' : 'Account created. Signed in.');
   };
 
   const handlePin = async (e: React.FormEvent) => {
@@ -80,101 +72,101 @@ const Auth = () => {
     setBusy(true);
     const { error } = await pinLogin(ve.data, vpin.data);
     setBusy(false);
-    if (error) toast.error(error);
-    else toast.success(ua ? 'PIN прийнято' : 'PIN accepted');
+    if (error) toast.error(error); else toast.success(ua ? 'PIN прийнято' : 'PIN accepted');
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border">
+    <div className="min-h-screen bg-background bg-gradient-hero">
+      <header className="border-b border-border/60">
         <div className="container flex items-center justify-between py-4">
-          <Button asChild variant="ghost" size="sm">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-gold">
             <Link to="/"><ArrowLeft className="h-4 w-4 mr-1" />{ua ? 'На головну' : 'Home'}</Link>
           </Button>
-          <ThemeToggle variant="ghost" size="sm" />
         </div>
       </header>
 
-      <main className="container max-w-md py-10 md:py-16">
-        <div className="text-center mb-8">
-          <div className="inline-flex h-12 w-12 rounded-xl bg-gradient-warm items-center justify-center font-display font-bold text-xl text-accent-foreground shadow-glow mb-4">H</div>
-          <h1 className="font-display text-3xl font-bold">{ua ? 'Вхід для персоналу' : 'Staff sign in'}</h1>
-          <p className="text-sm text-muted-foreground mt-2">{ua ? 'Клієнти можуть переглядати меню без входу.' : 'Customers browse menu without login.'}</p>
+      <main className="container max-w-md py-12 md:py-20 animate-fade-in-up">
+        <div className="text-center mb-10">
+          <div className="inline-flex h-14 w-14 rounded-xl bg-gradient-gold items-center justify-center font-display font-bold text-2xl text-primary-foreground shadow-gold mb-6">F</div>
+          <h1 className="font-display text-3xl md:text-4xl font-bold">{ua ? 'Вхід для персоналу' : 'Staff sign in'}</h1>
+          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{ua ? 'Клієнти можуть переглядати меню без входу.' : 'Customers browse the menu without an account.'}</p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="signin"><LogIn className="h-4 w-4 mr-1" />{ua ? 'Вхід' : 'Sign in'}</TabsTrigger>
-            <TabsTrigger value="pin"><KeyRound className="h-4 w-4 mr-1" />PIN</TabsTrigger>
-            <TabsTrigger value="signup"><UserPlus className="h-4 w-4 mr-1" />{ua ? 'Реєстрація' : 'Sign up'}</TabsTrigger>
-          </TabsList>
+        <div className="rounded-2xl bg-card border border-border p-6 md:p-8 shadow-2">
+          <Tabs defaultValue="signin" className="w-full">
+            <TabsList className="grid grid-cols-3 w-full bg-muted">
+              <TabsTrigger value="signin"><LogIn className="h-4 w-4 mr-1" />{ua ? 'Вхід' : 'Sign in'}</TabsTrigger>
+              <TabsTrigger value="pin"><KeyRound className="h-4 w-4 mr-1" />PIN</TabsTrigger>
+              <TabsTrigger value="signup"><UserPlus className="h-4 w-4 mr-1" />{ua ? 'Реєстрація' : 'Sign up'}</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn} className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="si-email">Email</Label>
-                <Input id="si-email" type="email" autoComplete="email" value={signInEmail} onChange={(e) => setSignInEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="si-pwd">{ua ? 'Пароль' : 'Password'}</Label>
-                <Input id="si-pwd" type="password" autoComplete="current-password" value={signInPwd} onChange={(e) => setSignInPwd(e.target.value)} required />
-              </div>
-              <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Увійти' : 'Sign in')}
-              </Button>
-            </form>
-          </TabsContent>
+            <TabsContent value="signin">
+              <form onSubmit={handleSignIn} className="space-y-4 mt-6">
+                <div className="space-y-2">
+                  <Label htmlFor="si-email">Email</Label>
+                  <Input id="si-email" type="email" autoComplete="email" value={signInEmail} onChange={(e) => setSignInEmail(e.target.value)} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="si-pwd">{ua ? 'Пароль' : 'Password'}</Label>
+                  <Input id="si-pwd" type="password" autoComplete="current-password" value={signInPwd} onChange={(e) => setSignInPwd(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full h-11 font-semibold" disabled={busy}>
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Увійти' : 'Sign in')}
+                </Button>
+              </form>
+            </TabsContent>
 
-          <TabsContent value="pin">
-            <form onSubmit={handlePin} className="space-y-4 mt-6">
-              <p className="text-xs text-muted-foreground">{ua ? 'Швидкий вхід на робочому планшеті. PIN треба попередньо встановити в Адмінці.' : 'Quick sign in on shared tablet. Set your PIN in Admin first.'}</p>
-              <div className="space-y-2">
-                <Label htmlFor="pin-email">Email</Label>
-                <Input id="pin-email" type="email" value={pinEmail} onChange={(e) => setPinEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pin">PIN (4-8 {ua ? 'цифр' : 'digits'})</Label>
-                <Input id="pin" type="password" inputMode="numeric" maxLength={8} value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} required />
-              </div>
-              <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Увійти за PIN' : 'PIN sign in')}
-              </Button>
-            </form>
-          </TabsContent>
+            <TabsContent value="pin">
+              <form onSubmit={handlePin} className="space-y-4 mt-6">
+                <p className="text-xs text-muted-foreground leading-relaxed">{ua ? 'Швидкий вхід на робочому планшеті. PIN треба попередньо встановити в Адмінці.' : 'Quick sign in on a shared tablet. Set your PIN in Admin first.'}</p>
+                <div className="space-y-2">
+                  <Label htmlFor="pin-email">Email</Label>
+                  <Input id="pin-email" type="email" value={pinEmail} onChange={(e) => setPinEmail(e.target.value)} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pin">PIN (4-8 {ua ? 'цифр' : 'digits'})</Label>
+                  <Input id="pin" type="password" inputMode="numeric" maxLength={8} value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} required className="tracking-[0.5em] text-center text-lg" />
+                </div>
+                <Button type="submit" className="w-full h-11 font-semibold" disabled={busy}>
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Увійти за PIN' : 'PIN sign in')}
+                </Button>
+              </form>
+            </TabsContent>
 
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp} className="space-y-4 mt-6">
-              <div className="space-y-2">
-                <Label htmlFor="su-name">{ua ? "Ім'я" : 'Full name'}</Label>
-                <Input id="su-name" value={suName} onChange={(e) => setSuName(e.target.value)} maxLength={100} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="su-email">Email</Label>
-                <Input id="su-email" type="email" autoComplete="email" value={suEmail} onChange={(e) => setSuEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="su-pwd">{ua ? 'Пароль (мін. 6)' : 'Password (min 6)'}</Label>
-                <Input id="su-pwd" type="password" autoComplete="new-password" value={suPwd} onChange={(e) => setSuPwd(e.target.value)} minLength={6} required />
-              </div>
-              <div className="space-y-2">
-                <Label>{ua ? 'Роль' : 'Role'}</Label>
-                <Select value={suRole} onValueChange={(v) => setSuRole(v as AppRole)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="waiter">{ua ? 'Офіціант' : 'Waiter'}</SelectItem>
-                    <SelectItem value="kitchen">{ua ? 'Кухня' : 'Kitchen'}</SelectItem>
-                    <SelectItem value="cashier">{ua ? 'Касир' : 'Cashier'}</SelectItem>
-                    <SelectItem value="manager">{ua ? 'Менеджер' : 'Manager'}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">{ua ? 'Ролі owner / super_admin призначає власник.' : 'Owner / super_admin assigned by owner only.'}</p>
-              </div>
-              <Button type="submit" className="w-full" disabled={busy}>
-                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Створити акаунт' : 'Create account')}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="signup">
+              <form onSubmit={handleSignUp} className="space-y-4 mt-6">
+                <div className="space-y-2">
+                  <Label htmlFor="su-name">{ua ? "Ім'я" : 'Full name'}</Label>
+                  <Input id="su-name" value={suName} onChange={(e) => setSuName(e.target.value)} maxLength={100} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="su-email">Email</Label>
+                  <Input id="su-email" type="email" autoComplete="email" value={suEmail} onChange={(e) => setSuEmail(e.target.value)} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="su-pwd">{ua ? 'Пароль (мін. 6)' : 'Password (min 6)'}</Label>
+                  <Input id="su-pwd" type="password" autoComplete="new-password" value={suPwd} onChange={(e) => setSuPwd(e.target.value)} minLength={6} required />
+                </div>
+                <div className="space-y-2">
+                  <Label>{ua ? 'Роль' : 'Role'}</Label>
+                  <Select value={suRole} onValueChange={(v) => setSuRole(v as AppRole)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="waiter">{ua ? 'Офіціант' : 'Waiter'}</SelectItem>
+                      <SelectItem value="kitchen">{ua ? 'Кухня' : 'Kitchen'}</SelectItem>
+                      <SelectItem value="cashier">{ua ? 'Касир' : 'Cashier'}</SelectItem>
+                      <SelectItem value="manager">{ua ? 'Менеджер' : 'Manager'}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">{ua ? 'Ролі owner / super_admin призначає власник.' : 'Owner / super_admin assigned by owner only.'}</p>
+                </div>
+                <Button type="submit" className="w-full h-11 font-semibold" disabled={busy}>
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : (ua ? 'Створити акаунт' : 'Create account')}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
     </div>
   );
