@@ -8,8 +8,8 @@ import { ZoneHeader } from '@/components/ZoneHeader';
 import { toast } from 'sonner';
 
 const statusColors: Record<Table['status'], string> = {
-  free: 'bg-success/15 border-success/40 text-success',
-  occupied: 'bg-accent/15 border-accent/50 text-accent',
+  free: 'bg-success/15 border-success/50 text-success',
+  occupied: 'bg-gradient-bordeaux border-gold/50 text-gold-light',
   reserved: 'bg-warning/15 border-warning/50 text-warning',
 };
 
@@ -53,10 +53,10 @@ const Waiter = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <ZoneHeader zone="WAITER" title={tr.floorPlan} subtitle={`${tables.length} ${tr.tables}`} />
+      <ZoneHeader zone="FLOOR" title={tr.floorPlan} subtitle={`${tables.length} ${tr.tables}`} />
 
       {/* Status legend */}
-      <div className="px-4 md:px-8 py-4 flex flex-wrap gap-3 border-b border-border bg-card">
+      <div className="px-4 md:px-8 py-5 flex flex-wrap gap-3 border-b border-border bg-card/50">
         {(['free', 'occupied', 'reserved'] as const).map(s => (
           <div key={s} className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 ${statusColors[s]}`}>
             <span className="h-2 w-2 rounded-full bg-current" />
