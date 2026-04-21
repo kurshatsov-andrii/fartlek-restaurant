@@ -9,6 +9,7 @@ import { useI18n } from '@/lib/i18n';
 import { categories, dishes, fmtUAH } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const Customer = () => {
   const { lang, tr } = useI18n();
