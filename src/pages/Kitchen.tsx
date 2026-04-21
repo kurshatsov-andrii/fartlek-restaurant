@@ -260,13 +260,12 @@ const DraggableOrder = ({
 };
 
 const OrderCard = ({
-  o, dragging, onComplete, onMove, dragHandle,
+  o, dragging, onComplete, onMove,
 }: {
   o: KOrder;
   dragging?: boolean;
   onComplete?: (id: string) => void;
   onMove?: (id: string, s: KStatus) => void;
-  dragHandle?: { attributes: any; listeners: any };
 }) => {
   const { tr } = useI18n();
   const elapsed = Date.now() - o.createdAt;
@@ -281,19 +280,13 @@ const OrderCard = ({
   const nextLabel = next === 'progress' ? tr.inProgress : next === 'ready' ? tr.ready : '';
 
   const barColor = overdue ? 'bg-destructive' : urgent ? 'bg-warning' : 'bg-success';
+  const stop = (e: React.PointerEvent | React.MouseEvent) => e.stopPropagation();
 
   return (
-    <div className={`bg-sidebar rounded-xl p-4 border ${overdue ? 'border-destructive animate-pulse-glow' : urgent ? 'border-warning/60' : 'border-sidebar-border'} ${dragging ? 'shadow-2xl ring-2 ring-gold rotate-2' : 'animate-fade-in'}`}>
+    <div className={`bg-sidebar rounded-xl p-4 border cursor-grab active:cursor-grabbing select-none ${overdue ? 'border-destructive animate-pulse-glow' : urgent ? 'border-warning/60' : 'border-sidebar-border'} ${dragging ? 'shadow-2xl ring-2 ring-gold rotate-2' : 'animate-fade-in'}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <button
-            className="cursor-grab active:cursor-grabbing touch-none p-1 -m-1 rounded hover:bg-sidebar-accent"
-            {...(dragHandle?.attributes || {})}
-            {...(dragHandle?.listeners || {})}
-            aria-label="Drag"
-          >
-            <GripVertical className="h-4 w-4 text-sidebar-foreground/60" />
-          </button>
+          <GripVertical className="h-4 w-4 text-sidebar-foreground/60" />
           <span className="font-mono font-bold text-sm">{o.code}</span>
           {o.priority && <Flame className="h-4 w-4 text-accent" />}
         </div>
