@@ -269,11 +269,12 @@ const OrderCard = ({
 }) => {
   const { tr } = useI18n();
   const elapsed = Date.now() - o.createdAt;
-  const mins = Math.floor(elapsed / 60_000);
-  const secs = Math.floor((elapsed % 60_000) / 1000);
-  const pct = Math.min(100, (elapsed / MAX_PREP_MS) * 100);
+  const remaining = Math.max(0, MAX_PREP_MS - elapsed);
   const overdue = elapsed >= MAX_PREP_MS;
   const urgent = elapsed >= MAX_PREP_MS * 0.7;
+  const mins = Math.floor(remaining / 60_000);
+  const secs = Math.floor((remaining % 60_000) / 1000);
+  const pct = Math.max(0, 100 - (elapsed / MAX_PREP_MS) * 100);
 
   const next = NEXT_STATUS[o.status];
   const nextLabel = next === 'progress' ? tr.inProgress : next === 'ready' ? tr.ready : '';
