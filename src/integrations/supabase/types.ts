@@ -14,6 +14,148 @@ export type Database = {
   }
   public: {
     Tables: {
+      kitchen_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          order_id: string
+          qty: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          order_id: string
+          qty?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          order_id?: string
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kitchen_orders: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          position: number
+          priority: boolean
+          status: Database["public"]["Enums"]["kitchen_status"]
+          table_number: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          position?: number
+          priority?: boolean
+          status?: Database["public"]["Enums"]["kitchen_status"]
+          table_number: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          position?: number
+          priority?: boolean
+          status?: Database["public"]["Enums"]["kitchen_status"]
+          table_number?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      menu_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name_en: string
+          name_ua: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name_en: string
+          name_ua: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name_en?: string
+          name_ua?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      menu_dishes: {
+        Row: {
+          category_id: string
+          created_at: string
+          description_en: string
+          description_ua: string
+          emoji: string
+          id: string
+          name_en: string
+          name_ua: string
+          popular: boolean
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description_en?: string
+          description_ua?: string
+          emoji?: string
+          id: string
+          name_en: string
+          name_ua: string
+          popular?: boolean
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description_en?: string
+          description_ua?: string
+          emoji?: string
+          id?: string
+          name_en?: string
+          name_ua?: string
+          popular?: boolean
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_dishes_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -126,6 +268,7 @@ export type Database = {
         | "waiter"
         | "kitchen"
         | "cashier"
+      kitchen_status: "new" | "progress" | "ready"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -261,6 +404,7 @@ export const Constants = {
         "kitchen",
         "cashier",
       ],
+      kitchen_status: ["new", "progress", "ready"],
     },
   },
 } as const
