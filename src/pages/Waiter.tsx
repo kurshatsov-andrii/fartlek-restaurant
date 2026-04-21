@@ -6,6 +6,7 @@ import { useI18n } from '@/lib/i18n';
 import { initialTables, dishes, fmtUAH, Table, Zone } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const statusColors: Record<Table['status'], string> = {
   free: 'bg-success/15 border-success/50 text-success',
