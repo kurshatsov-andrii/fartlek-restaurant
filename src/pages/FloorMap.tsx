@@ -74,17 +74,12 @@ const FloorMap = () => {
     setTables(ts => ts.map(t => t.id === dragState.current!.id ? { ...t, x: clampedX, y: clampedY } : t));
   };
 
-  const onPointerUp = (e: React.PointerEvent, didMove: boolean) => {
+  const onPointerUp = (e: React.PointerEvent) => {
     const wasDragging = !!dragState.current;
     dragState.current = null;
     if (!wasDragging) return;
+    try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
     e.stopPropagation();
-  };
-
-  // Click vs drag detection
-  const handleTableClick = (t: Table, hasMoved: boolean) => {
-    if (hasMoved) return;
-    setSelected(t);
   };
 
   const changeStatus = (newStatus: TableStatus) => {
@@ -308,7 +303,7 @@ const DraggableTable = ({
   t: Table; now: number;
   onPointerDown: (e: React.PointerEvent, t: Table) => void;
   onPointerMove: (e: React.PointerEvent) => void;
-  onPointerUp: (e: React.PointerEvent, hasMoved: boolean) => void;
+  onPointerUp: (e: React.PointerEvent) => void;
   onClick: () => void;
 }) => {
   const Icon = statusIcon[t.status];
@@ -334,10 +329,13 @@ const DraggableTable = ({
         onPointerMove(e);
       }}
       onPointerUp={(e) => {
-        onPointerUp(e, movedRef.current);
-        if (!movedRef.current) onClick();
+        const wasMoved = movedRef.current;
+        onPointerUp(e);
         startRef.current = null;
+        movedRef.current = false;
+        if (!wasMoved) onClick();
       }}
+      onClick={(e) => e.stopPropagation()}
       className={`absolute select-none cursor-grab active:cursor-grabbing border-2 transition-shadow hover:shadow-hover hover:z-10 ${statusStyle[t.status].wrap} ${t.shape === 'round' ? 'rounded-full' : 'rounded-2xl'} flex flex-col items-center justify-center p-2 touch-none`}
       style={{
         left: `${t.x}%`,
