@@ -1,42 +1,34 @@
-import { useState } from 'react';
-import { Plus, Trash2, Edit3, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Trash2, Edit3, X, Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import { useI18n } from '@/lib/i18n';
-import {
-  dishes as initialDishes,
-  categories as initialCategories,
-  fmtUAH,
-  Dish,
-} from '@/lib/mockData';
+import { fmtUAH } from '@/lib/mockData';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 type Category = { id: string; name: { ua: string; en: string } };
+type Dish = {
+  id: string;
+  name: { ua: string; en: string };
+  description: { ua: string; en: string };
+  price: number;
+  category: string;
+  emoji: string;
+  popular?: boolean;
+};
 
 const dishSchema = z.object({
   nameUa: z.string().trim().min(1, 'Назва UA обов\'язкова').max(80),
@@ -59,19 +51,43 @@ const slug = (s: string) =>
 
 export const MenuBuilder = () => {
   const { tr, lang } = useI18n();
-  const [dishes, setDishes] = useState<Dish[]>(initialDishes);
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
 
   const [dishOpen, setDishOpen] = useState(false);
   const [editing, setEditing] = useState<Dish | null>(null);
   const [form, setForm] = useState({
     nameUa: '', nameEn: '', descUa: '', descEn: '',
-    price: '0', category: categories[0]?.id ?? '', emoji: '🍽️',
+    price: '0', category: '', emoji: '🍽️',
   });
 
   const [catOpen, setCatOpen] = useState(false);
   const [catForm, setCatForm] = useState({ nameUa: '', nameEn: '' });
+
+  // Load from Supabase
+  const fetchAll = async () => {
+    const [{ data: cats, error: ce }, { data: dsh, error: de }] = await Promise.all([
+      supabase.from('menu_categories').select('*').order('sort_order'),
+      supabase.from('menu_dishes').select('*').order('created_at'),
+    ]);
+    if (ce) toast.error(ce.message);
+    if (de) toast.error(de.message);
+    setCategories((cats || []).map(c => ({ id: c.id, name: { ua: c.name_ua, en: c.name_en } })));
+    setDishes((dsh || []).map(d => ({
+      id: d.id,
+      name: { ua: d.name_ua, en: d.name_en },
+      description: { ua: d.description_ua || '', en: d.description_en || '' },
+      price: Number(d.price),
+      category: d.category_id,
+      emoji: d.emoji,
+      popular: d.popular,
+    })));
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchAll(); }, []);
 
   const openNewDish = () => {
     setEditing(null);
@@ -92,64 +108,72 @@ export const MenuBuilder = () => {
     setDishOpen(true);
   };
 
-  const saveDish = () => {
+  const saveDish = async () => {
     const parsed = dishSchema.safeParse(form);
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0].message);
-      return;
-    }
+    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     const v = parsed.data;
+    const payload = {
+      name_ua: v.nameUa, name_en: v.nameEn,
+      description_ua: v.descUa, description_en: v.descEn,
+      price: v.price, category_id: v.category, emoji: v.emoji,
+    };
     if (editing) {
-      setDishes(ds => ds.map(d => d.id === editing.id ? {
-        ...d,
-        name: { ua: v.nameUa, en: v.nameEn },
-        description: { ua: v.descUa, en: v.descEn },
-        price: v.price, category: v.category, emoji: v.emoji,
-      } : d));
+      const { error } = await supabase.from('menu_dishes').update(payload).eq('id', editing.id);
+      if (error) { toast.error(error.message); return; }
       toast.success(lang === 'ua' ? 'Страву оновлено' : 'Dish updated');
     } else {
       const id = `d-${Date.now().toString(36)}`;
-      setDishes(ds => [...ds, {
-        id,
-        name: { ua: v.nameUa, en: v.nameEn },
-        description: { ua: v.descUa, en: v.descEn },
-        price: v.price, category: v.category, emoji: v.emoji,
-      }]);
+      const { error } = await supabase.from('menu_dishes').insert({ id, ...payload });
+      if (error) { toast.error(error.message); return; }
       toast.success(lang === 'ua' ? 'Страву додано' : 'Dish added');
     }
     setDishOpen(false);
+    fetchAll();
   };
 
-  const removeDish = (id: string) => {
-    setDishes(ds => ds.filter(d => d.id !== id));
+  const removeDish = async (id: string) => {
+    const { error } = await supabase.from('menu_dishes').delete().eq('id', id);
+    if (error) { toast.error(error.message); return; }
     toast.success(lang === 'ua' ? 'Видалено' : 'Removed');
+    fetchAll();
   };
 
-  const saveCategory = () => {
+  const saveCategory = async () => {
     const parsed = catSchema.safeParse(catForm);
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0].message);
-      return;
-    }
+    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     const v = parsed.data;
     let id = slug(v.nameEn);
     if (categories.some(c => c.id === id)) id = `${id}-${Date.now().toString(36)}`;
-    setCategories(cs => [...cs, { id, name: { ua: v.nameUa, en: v.nameEn } }]);
+    const { error } = await supabase.from('menu_categories').insert({
+      id, name_ua: v.nameUa, name_en: v.nameEn, sort_order: categories.length + 1,
+    });
+    if (error) { toast.error(error.message); return; }
     setCatForm({ nameUa: '', nameEn: '' });
     setCatOpen(false);
     toast.success(lang === 'ua' ? 'Категорію додано' : 'Category added');
+    fetchAll();
   };
 
-  const removeCategory = (id: string) => {
+  const removeCategory = async (id: string) => {
     if (dishes.some(d => d.category === id)) {
       toast.error(lang === 'ua' ? 'Категорія використовується' : 'Category in use');
       return;
     }
-    setCategories(cs => cs.filter(c => c.id !== id));
+    const { error } = await supabase.from('menu_categories').delete().eq('id', id);
+    if (error) { toast.error(error.message); return; }
     if (filter === id) setFilter('all');
+    fetchAll();
   };
 
   const visible = filter === 'all' ? dishes : dishes.filter(d => d.category === filter);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20 text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin mr-2" /> Loading…
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
