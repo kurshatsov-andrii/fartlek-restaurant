@@ -21,6 +21,14 @@ const statusIcon: Record<TableStatus, React.ElementType> = {
   payment: CreditCard,
 };
 
+const DRAG_THRESHOLD = 8;
+
+const getTableSize = (table: Table) => {
+  const width = table.seats <= 2 ? 92 : table.seats <= 4 ? 116 : 144;
+  const height = table.shape === 'round' ? width : width * 0.85;
+  return { width, height };
+};
+
 const FloorMap = () => {
   const { tr, lang } = useI18n();
   const [tables, setTables] = useState(initialTables);
@@ -28,9 +36,17 @@ const FloorMap = () => {
   const [selected, setSelected] = useState<Table | null>(null);
   const [now, setNow] = useState(Date.now());
   const canvasRef = useRef<HTMLDivElement>(null);
-  const dragState = useRef<{ id: number; offsetX: number; offsetY: number } | null>(null);
+  const dragState = useRef<{
+    id: number;
+    offsetX: number;
+    offsetY: number;
+    startX: number;
+    startY: number;
+    moved: boolean;
+    width: number;
+    height: number;
+  } | null>(null);
 
-  // tick for live timers
   useEffect(() => {
     const i = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(i);
@@ -49,37 +65,62 @@ const FloorMap = () => {
     ? Math.round(((counts.occupied + counts.payment) / visibleTables.length) * 100)
     : 0;
 
-  // ===== Drag & Drop =====
   const onPointerDown = (e: React.PointerEvent, t: Table) => {
     if (!canvasRef.current) return;
-    const rect = canvasRef.current.getBoundingClientRect();
     const tableEl = e.currentTarget as HTMLElement;
     const tRect = tableEl.getBoundingClientRect();
+    const { width, height } = getTableSize(t);
+
     dragState.current = {
       id: t.id,
       offsetX: e.clientX - tRect.left,
       offsetY: e.clientY - tRect.top,
+      startX: e.clientX,
+      startY: e.clientY,
+      moved: false,
+      width,
+      height,
     };
+
     tableEl.setPointerCapture(e.pointerId);
     e.stopPropagation();
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragState.current || !canvasRef.current) return;
+
+    const state = dragState.current;
+    const dx = Math.abs(e.clientX - state.startX);
+    const dy = Math.abs(e.clientY - state.startY);
+
+    if (!state.moved && dx < DRAG_THRESHOLD && dy < DRAG_THRESHOLD) {
+      return;
+    }
+
+    state.moved = true;
     const rect = canvasRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left - dragState.current.offsetX) / rect.width) * 100;
-    const y = ((e.clientY - rect.top - dragState.current.offsetY) / rect.height) * 100;
-    const clampedX = Math.max(0, Math.min(92, x));
-    const clampedY = Math.max(0, Math.min(88, y));
-    setTables(ts => ts.map(t => t.id === dragState.current!.id ? { ...t, x: clampedX, y: clampedY } : t));
+    const x = ((e.clientX - rect.left - state.offsetX) / rect.width) * 100;
+    const y = ((e.clientY - rect.top - state.offsetY) / rect.height) * 100;
+    const maxX = ((rect.width - state.width) / rect.width) * 100;
+    const maxY = ((rect.height - state.height) / rect.height) * 100;
+    const clampedX = Math.max(0, Math.min(maxX, x));
+    const clampedY = Math.max(0, Math.min(maxY, y));
+
+    setTables(ts => ts.map(t => t.id === state.id ? { ...t, x: clampedX, y: clampedY } : t));
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
-    const wasDragging = !!dragState.current;
+    const state = dragState.current;
     dragState.current = null;
-    if (!wasDragging) return;
-    try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId); } catch {}
+
+    if (!state) return false;
+
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+
     e.stopPropagation();
+    return state.moved;
   };
 
   const changeStatus = (newStatus: TableStatus) => {
@@ -303,45 +344,31 @@ const DraggableTable = ({
   t: Table; now: number;
   onPointerDown: (e: React.PointerEvent, t: Table) => void;
   onPointerMove: (e: React.PointerEvent) => void;
-  onPointerUp: (e: React.PointerEvent) => void;
+  onPointerUp: (e: React.PointerEvent) => boolean;
   onClick: () => void;
 }) => {
   const Icon = statusIcon[t.status];
   const minutes = t.orderStartedAt ? Math.round((now - t.orderStartedAt) / 60_000) : null;
-  const movedRef = useRef(false);
-  const startRef = useRef<{ x: number; y: number } | null>(null);
-
-  const size = t.seats <= 2 ? 92 : t.seats <= 4 ? 116 : 144;
+  const { width, height } = getTableSize(t);
 
   return (
     <div
-      onPointerDown={(e) => {
-        startRef.current = { x: e.clientX, y: e.clientY };
-        movedRef.current = false;
-        onPointerDown(e, t);
-      }}
-      onPointerMove={(e) => {
-        if (startRef.current) {
-          const dx = Math.abs(e.clientX - startRef.current.x);
-          const dy = Math.abs(e.clientY - startRef.current.y);
-          if (dx > 4 || dy > 4) movedRef.current = true;
-        }
-        onPointerMove(e);
-      }}
+      onPointerDown={(e) => onPointerDown(e, t)}
+      onPointerMove={onPointerMove}
       onPointerUp={(e) => {
-        const wasMoved = movedRef.current;
+        const didDrag = onPointerUp(e);
+        if (!didDrag) onClick();
+      }}
+      onPointerCancel={(e) => {
         onPointerUp(e);
-        startRef.current = null;
-        movedRef.current = false;
-        if (!wasMoved) onClick();
       }}
       onClick={(e) => e.stopPropagation()}
       className={`absolute select-none cursor-grab active:cursor-grabbing border-2 transition-shadow hover:shadow-hover hover:z-10 ${statusStyle[t.status].wrap} ${t.shape === 'round' ? 'rounded-full' : 'rounded-2xl'} flex flex-col items-center justify-center p-2 touch-none`}
       style={{
         left: `${t.x}%`,
         top: `${t.y}%`,
-        width: size,
-        height: t.shape === 'round' ? size : size * 0.85,
+        width,
+        height,
       }}
     >
       <div className={`absolute top-2 right-2 h-2 w-2 rounded-full ${statusStyle[t.status].dot} ${t.status !== 'free' ? 'animate-pulse' : ''}`} />
