@@ -47,20 +47,20 @@ export const ZoneHeader = ({ title, subtitle, zone, variant: _v = 'light' }: Pro
         </div>
         <div className="flex items-center gap-2">
           {user && zoneLinks.length > 1 && (
-            <div className="hidden md:flex items-center gap-1 mr-2 p-1 rounded-xl bg-muted border border-border">
+            <div className="flex items-center gap-1 mr-1 sm:mr-2 p-1 rounded-xl bg-muted border border-border overflow-x-auto max-w-[60vw] sm:max-w-none">
               {zoneLinks.map(({ to, label, Icon }) => {
                 const active = location.pathname === to;
                 return (
                   <Link
                     key={to}
                     to={to}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                       active
                         ? 'bg-gradient-gold text-primary-foreground shadow-1'
                         : 'text-muted-foreground hover:text-gold'
                     }`}
                   >
-                    <Icon className="h-3.5 w-3.5" />{label}
+                    <Icon className="h-3.5 w-3.5" /><span className="hidden xs:inline sm:inline">{label}</span>
                   </Link>
                 );
               })}
