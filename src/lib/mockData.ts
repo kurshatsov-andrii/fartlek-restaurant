@@ -34,30 +34,48 @@ export const dishes: Dish[] = [
   { id: 'd13', name: { ua: 'Крафтове пиво', en: 'Craft Beer' }, description: { ua: '0.5л', en: '0.5L' }, price: 110, category: 'drinks', emoji: '🍺' },
 ];
 
+export type TableStatus = 'free' | 'occupied' | 'reserved' | 'payment';
+export type Zone = 'main' | 'terrace' | 'vip';
+
+export interface OrderItem {
+  dishId: string;
+  qty: number;
+}
+
 export interface Table {
   id: number;
   seats: number;
-  status: 'free' | 'occupied' | 'reserved';
+  status: TableStatus;
   x: number;
   y: number;
   shape: 'round' | 'square';
+  zone: Zone;
   guests?: number;
   total?: number;
+  waiter?: string;
+  orderItems?: OrderItem[];
+  orderStartedAt?: number;
 }
 
 export const initialTables: Table[] = [
-  { id: 1, seats: 2, status: 'free', x: 8, y: 10, shape: 'round' },
-  { id: 2, seats: 4, status: 'occupied', x: 28, y: 10, shape: 'square', guests: 3, total: 1240 },
-  { id: 3, seats: 2, status: 'reserved', x: 50, y: 10, shape: 'round' },
-  { id: 4, seats: 6, status: 'free', x: 70, y: 12, shape: 'square' },
-  { id: 5, seats: 4, status: 'occupied', x: 8, y: 40, shape: 'square', guests: 4, total: 2150 },
-  { id: 6, seats: 2, status: 'free', x: 32, y: 42, shape: 'round' },
-  { id: 7, seats: 8, status: 'occupied', x: 55, y: 42, shape: 'square', guests: 6, total: 3890 },
-  { id: 8, seats: 2, status: 'reserved', x: 80, y: 42, shape: 'round' },
-  { id: 9, seats: 4, status: 'free', x: 10, y: 72, shape: 'square' },
-  { id: 10, seats: 4, status: 'free', x: 35, y: 72, shape: 'square' },
-  { id: 11, seats: 2, status: 'occupied', x: 60, y: 75, shape: 'round', guests: 2, total: 480 },
-  { id: 12, seats: 6, status: 'free', x: 78, y: 72, shape: 'square' },
+  // MAIN HALL
+  { id: 1, seats: 2, status: 'free', x: 8, y: 10, shape: 'round', zone: 'main' },
+  { id: 2, seats: 4, status: 'occupied', x: 28, y: 10, shape: 'square', zone: 'main', guests: 3, total: 1240, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd1', qty: 2 }, { dishId: 'd3', qty: 1 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 24 * 60_000 },
+  { id: 3, seats: 2, status: 'reserved', x: 50, y: 10, shape: 'round', zone: 'main' },
+  { id: 4, seats: 6, status: 'free', x: 70, y: 12, shape: 'square', zone: 'main' },
+  { id: 5, seats: 4, status: 'occupied', x: 8, y: 40, shape: 'square', zone: 'main', guests: 4, total: 2150, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd4', qty: 2 }, { dishId: 'd2', qty: 2 }, { dishId: 'd13', qty: 2 }], orderStartedAt: Date.now() - 42 * 60_000 },
+  { id: 6, seats: 2, status: 'free', x: 32, y: 42, shape: 'round', zone: 'main' },
+  { id: 7, seats: 8, status: 'payment', x: 55, y: 42, shape: 'square', zone: 'main', guests: 6, total: 3890, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd7', qty: 2 }, { dishId: 'd8', qty: 1 }, { dishId: 'd13', qty: 4 }], orderStartedAt: Date.now() - 78 * 60_000 },
+  { id: 8, seats: 2, status: 'reserved', x: 80, y: 42, shape: 'round', zone: 'main' },
+  // TERRACE
+  { id: 9, seats: 4, status: 'free', x: 12, y: 18, shape: 'square', zone: 'terrace' },
+  { id: 10, seats: 4, status: 'occupied', x: 40, y: 20, shape: 'square', zone: 'terrace', guests: 3, total: 720, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd9', qty: 3 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 15 * 60_000 },
+  { id: 11, seats: 2, status: 'free', x: 68, y: 22, shape: 'round', zone: 'terrace' },
+  { id: 12, seats: 6, status: 'reserved', x: 25, y: 60, shape: 'square', zone: 'terrace' },
+  // VIP
+  { id: 13, seats: 8, status: 'occupied', x: 20, y: 25, shape: 'square', zone: 'vip', guests: 7, total: 8420, waiter: 'Олена Коваль', orderItems: [{ dishId: 'd4', qty: 4 }, { dishId: 'd5', qty: 2 }, { dishId: 'd13', qty: 6 }], orderStartedAt: Date.now() - 95 * 60_000 },
+  { id: 14, seats: 4, status: 'free', x: 60, y: 30, shape: 'round', zone: 'vip' },
+  { id: 15, seats: 6, status: 'reserved', x: 40, y: 65, shape: 'square', zone: 'vip' },
 ];
 
 export interface KitchenOrder {
@@ -98,8 +116,12 @@ export const t = {
     enter: 'Увійти', back: 'Назад',
     menu: 'Меню', cart: 'Кошик', order: 'Замовити', total: 'Разом',
     addToCart: 'Додати', empty: 'Кошик порожній', checkout: 'Оплатити',
-    table: 'Стіл', tables: 'Столи', free: 'Вільний', occupied: 'Зайнятий', reserved: 'Заброньовано',
-    floorPlan: 'План залу', orders: 'Замовлення', newOrder: 'Нове замовлення',
+    table: 'Стіл', tables: 'Столи', free: 'Вільний', occupied: 'Зайнятий', reserved: 'Заброньовано', payment: 'Оплата',
+    floorPlan: 'План залу', floorMap: 'Карта залу', orders: 'Замовлення', newOrder: 'Нове замовлення',
+    mainHall: 'Основна зала', terrace: 'Тераса', vip: 'VIP', allZones: 'Усі зони',
+    waiterName: 'Офіціант', changeStatus: 'Змінити статус', viewOrder: 'Переглянути замовлення',
+    capacity: 'Місць', activeOrders: 'Активних замовлень', dragHint: 'Перетягуйте столи для зміни розташування',
+    qty: 'К-сть', noOrder: 'Замовлення відсутнє', occupancy: 'Завантаженість',
     splitBill: 'Розділити', closeBill: 'Закрити рахунок', guests: 'Гостей',
     new: 'Нові', inProgress: 'Готується', ready: 'Готово',
     dashboard: 'Дашборд', menuBuilder: 'Меню', staff: 'Персонал', settings: 'Налаштування',
@@ -122,8 +144,12 @@ export const t = {
     enter: 'Enter', back: 'Back',
     menu: 'Menu', cart: 'Cart', order: 'Order', total: 'Total',
     addToCart: 'Add', empty: 'Cart is empty', checkout: 'Checkout',
-    table: 'Table', tables: 'Tables', free: 'Free', occupied: 'Occupied', reserved: 'Reserved',
-    floorPlan: 'Floor plan', orders: 'Orders', newOrder: 'New order',
+    table: 'Table', tables: 'Tables', free: 'Free', occupied: 'Occupied', reserved: 'Reserved', payment: 'Payment',
+    floorPlan: 'Floor plan', floorMap: 'Floor map', orders: 'Orders', newOrder: 'New order',
+    mainHall: 'Main hall', terrace: 'Terrace', vip: 'VIP', allZones: 'All zones',
+    waiterName: 'Waiter', changeStatus: 'Change status', viewOrder: 'View full order',
+    capacity: 'Seats', activeOrders: 'Active orders', dragHint: 'Drag tables to reposition',
+    qty: 'Qty', noOrder: 'No active order', occupancy: 'Occupancy',
     splitBill: 'Split bill', closeBill: 'Close bill', guests: 'Guests',
     new: 'New', inProgress: 'In progress', ready: 'Ready',
     dashboard: 'Dashboard', menuBuilder: 'Menu', staff: 'Staff', settings: 'Settings',
