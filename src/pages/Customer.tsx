@@ -26,7 +26,24 @@ const Customer = () => {
   const add = (id: string) => setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
   const sub = (id: string) => setCart(c => { const n = { ...c }; if (!n[id]) return n; n[id]--; if (n[id] <= 0) delete n[id]; return n; });
 
-  const place = () => {
+  const place = async () => {
+    if (cartItems.length === 0) return;
+    const code = `ORD-${1000 + Math.floor(Math.random() * 9000)}`;
+    const { data: order, error } = await supabase
+      .from('kitchen_orders')
+      .insert({ code, table_number: tableNo, status: 'new', priority: false })
+      .select('id')
+      .single();
+    if (error || !order) {
+      toast.error(error?.message || 'Помилка замовлення');
+      return;
+    }
+    const items = cartItems.map(i => ({ order_id: order.id, name: i.dish.name[lang], qty: i.qty }));
+    const { error: itErr } = await supabase.from('kitchen_order_items').insert(items);
+    if (itErr) {
+      toast.error(itErr.message);
+      return;
+    }
     setCart({});
     setPlaced(true);
     toast.success(tr.orderPlaced);
