@@ -250,10 +250,11 @@ const DraggableOrder = ({
   const style: React.CSSProperties = {
     opacity: isDragging ? 0.3 : 1,
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    touchAction: 'none',
   };
   return (
-    <div ref={setNodeRef} style={style}>
-      <OrderCard o={o} onComplete={onComplete} onMove={onMove} dragHandle={{ attributes, listeners }} />
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <OrderCard o={o} onComplete={onComplete} onMove={onMove} />
     </div>
   );
 };
