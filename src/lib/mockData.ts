@@ -58,24 +58,24 @@ export interface Table {
 }
 
 export const initialTables: Table[] = [
-  // MAIN HALL
-  { id: 1, seats: 2, status: 'free', x: 8, y: 10, shape: 'round', zone: 'main' },
-  { id: 2, seats: 4, status: 'occupied', x: 28, y: 10, shape: 'square', zone: 'main', guests: 3, total: 1240, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd1', qty: 2 }, { dishId: 'd3', qty: 1 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 24 * 60_000 },
-  { id: 3, seats: 2, status: 'reserved', x: 50, y: 10, shape: 'round', zone: 'main' },
-  { id: 4, seats: 6, status: 'free', x: 70, y: 12, shape: 'square', zone: 'main' },
-  { id: 5, seats: 4, status: 'occupied', x: 8, y: 40, shape: 'square', zone: 'main', guests: 4, total: 2150, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd4', qty: 2 }, { dishId: 'd2', qty: 2 }, { dishId: 'd13', qty: 2 }], orderStartedAt: Date.now() - 42 * 60_000 },
-  { id: 6, seats: 2, status: 'free', x: 32, y: 42, shape: 'round', zone: 'main' },
-  { id: 7, seats: 8, status: 'payment', x: 55, y: 42, shape: 'square', zone: 'main', guests: 6, total: 3890, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd7', qty: 2 }, { dishId: 'd8', qty: 1 }, { dishId: 'd13', qty: 4 }], orderStartedAt: Date.now() - 78 * 60_000 },
-  { id: 8, seats: 2, status: 'reserved', x: 80, y: 42, shape: 'round', zone: 'main' },
+  // MAIN HALL — 4 рядки × 4 колонки, з кроком ~22% по X та ~28% по Y
+  { id: 1, seats: 2, status: 'free', x: 4, y: 8, shape: 'round', zone: 'main' },
+  { id: 2, seats: 4, status: 'occupied', x: 28, y: 8, shape: 'square', zone: 'main', guests: 3, total: 1240, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd1', qty: 2 }, { dishId: 'd3', qty: 1 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 24 * 60_000 },
+  { id: 3, seats: 2, status: 'reserved', x: 54, y: 8, shape: 'round', zone: 'main' },
+  { id: 4, seats: 6, status: 'free', x: 76, y: 8, shape: 'square', zone: 'main' },
+  { id: 5, seats: 4, status: 'occupied', x: 4, y: 48, shape: 'square', zone: 'main', guests: 4, total: 2150, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd4', qty: 2 }, { dishId: 'd2', qty: 2 }, { dishId: 'd13', qty: 2 }], orderStartedAt: Date.now() - 42 * 60_000 },
+  { id: 6, seats: 2, status: 'free', x: 30, y: 50, shape: 'round', zone: 'main' },
+  { id: 7, seats: 8, status: 'payment', x: 52, y: 48, shape: 'square', zone: 'main', guests: 6, total: 3890, waiter: 'Андрій Мельник', orderItems: [{ dishId: 'd7', qty: 2 }, { dishId: 'd8', qty: 1 }, { dishId: 'd13', qty: 4 }], orderStartedAt: Date.now() - 78 * 60_000 },
+  { id: 8, seats: 2, status: 'reserved', x: 80, y: 50, shape: 'round', zone: 'main' },
   // TERRACE
-  { id: 9, seats: 4, status: 'free', x: 12, y: 18, shape: 'square', zone: 'terrace' },
-  { id: 10, seats: 4, status: 'occupied', x: 40, y: 20, shape: 'square', zone: 'terrace', guests: 3, total: 720, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd9', qty: 3 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 15 * 60_000 },
-  { id: 11, seats: 2, status: 'free', x: 68, y: 22, shape: 'round', zone: 'terrace' },
-  { id: 12, seats: 6, status: 'reserved', x: 25, y: 60, shape: 'square', zone: 'terrace' },
+  { id: 9, seats: 4, status: 'free', x: 6, y: 10, shape: 'square', zone: 'terrace' },
+  { id: 10, seats: 4, status: 'occupied', x: 38, y: 10, shape: 'square', zone: 'terrace', guests: 3, total: 720, waiter: 'Марія Шевченко', orderItems: [{ dishId: 'd9', qty: 3 }, { dishId: 'd11', qty: 3 }], orderStartedAt: Date.now() - 15 * 60_000 },
+  { id: 11, seats: 2, status: 'free', x: 72, y: 12, shape: 'round', zone: 'terrace' },
+  { id: 12, seats: 6, status: 'reserved', x: 20, y: 60, shape: 'square', zone: 'terrace' },
   // VIP
-  { id: 13, seats: 8, status: 'occupied', x: 20, y: 25, shape: 'square', zone: 'vip', guests: 7, total: 8420, waiter: 'Олена Коваль', orderItems: [{ dishId: 'd4', qty: 4 }, { dishId: 'd5', qty: 2 }, { dishId: 'd13', qty: 6 }], orderStartedAt: Date.now() - 95 * 60_000 },
-  { id: 14, seats: 4, status: 'free', x: 60, y: 30, shape: 'round', zone: 'vip' },
-  { id: 15, seats: 6, status: 'reserved', x: 40, y: 65, shape: 'square', zone: 'vip' },
+  { id: 13, seats: 8, status: 'occupied', x: 10, y: 12, shape: 'square', zone: 'vip', guests: 7, total: 8420, waiter: 'Олена Коваль', orderItems: [{ dishId: 'd4', qty: 4 }, { dishId: 'd5', qty: 2 }, { dishId: 'd13', qty: 6 }], orderStartedAt: Date.now() - 95 * 60_000 },
+  { id: 14, seats: 4, status: 'free', x: 60, y: 18, shape: 'round', zone: 'vip' },
+  { id: 15, seats: 6, status: 'reserved', x: 35, y: 60, shape: 'square', zone: 'vip' },
 ];
 
 export interface KitchenOrder {
