@@ -175,14 +175,15 @@ const Column = ({
 };
 
 const DraggableOrder = ({ o, onComplete }: { o: KOrder; onComplete: (id: string) => void }) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: o.id });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: o.id });
+  const style: React.CSSProperties = {
+    opacity: isDragging ? 0.3 : 1,
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    touchAction: 'none',
+  };
   return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      style={{ opacity: isDragging ? 0.3 : 1 }}
-    >
-      <OrderCard o={o} listeners={listeners} onComplete={onComplete} />
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <OrderCard o={o} onComplete={onComplete} />
     </div>
   );
 };
@@ -199,12 +200,10 @@ const OrderCard = ({
   const mins = Math.floor((Date.now() - o.createdAt) / 60_000);
   const urgent = mins > 10;
   return (
-    <div className={`bg-sidebar rounded-xl p-4 border ${urgent ? 'border-destructive animate-pulse-glow' : 'border-sidebar-border'} ${dragging ? 'shadow-2xl ring-2 ring-gold rotate-2' : 'animate-fade-in'}`}>
+    <div className={`bg-sidebar rounded-xl p-4 border cursor-grab active:cursor-grabbing ${urgent ? 'border-destructive animate-pulse-glow' : 'border-sidebar-border'} ${dragging ? 'shadow-2xl ring-2 ring-gold rotate-2' : 'animate-fade-in'}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <button {...(listeners || {})} className="cursor-grab active:cursor-grabbing touch-none p-1 -m-1 text-sidebar-foreground/40 hover:text-gold">
-            <GripVertical className="h-4 w-4" />
-          </button>
+          <GripVertical className="h-4 w-4 text-sidebar-foreground/40" />
           <span className="font-mono font-bold text-sm">{o.code}</span>
           {o.priority && <Flame className="h-4 w-4 text-accent" />}
         </div>
