@@ -54,6 +54,9 @@
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
+    --info: 210 90% 56%;
+    --info-foreground: 0 0% 100%;
+
     --border: 240 4% 18%;
     --input: 240 4% 14%;
     --ring: 42 53% 54%;

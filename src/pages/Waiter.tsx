@@ -11,6 +11,7 @@ const statusColors: Record<Table['status'], string> = {
   free: 'bg-success/15 border-success/50 text-success',
   occupied: 'bg-gradient-bordeaux border-gold/50 text-gold-light',
   reserved: 'bg-warning/15 border-warning/50 text-warning',
+  payment: 'bg-info/15 border-info/50 text-info',
 };
 
 const Waiter = () => {

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Languages, LogOut, LayoutGrid, ChefHat, Shield } from 'lucide-react';
+import { ArrowLeft, Languages, LogOut, LayoutGrid, ChefHat, Shield, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { useAuth, canAccessZone } from '@/lib/auth';
@@ -20,6 +20,7 @@ export const ZoneHeader = ({ title, subtitle, zone, variant: _v = 'light' }: Pro
 
   const zoneLinks = [
     { to: '/waiter', key: 'waiter' as const, label: lang === 'ua' ? 'Зал' : 'Floor', Icon: LayoutGrid },
+    { to: '/floor-map', key: 'waiter' as const, label: lang === 'ua' ? 'Карта' : 'Map', Icon: Map },
     { to: '/kitchen', key: 'kitchen' as const, label: lang === 'ua' ? 'Кухня' : 'Kitchen', Icon: ChefHat },
     { to: '/admin', key: 'admin' as const, label: 'Admin', Icon: Shield },
   ].filter(z => canAccessZone(z.key, roles));
