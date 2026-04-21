@@ -164,25 +164,20 @@ const Kitchen = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <ZoneHeader
-        zone="KITCHEN"
-        title="KDS · Kitchen Display"
-        subtitle={`${orders.length} active`}
-        right={
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSoundOn(s => !s)}
-            className="gap-2"
-            title={soundOn ? 'Звук увімкнено' : 'Звук вимкнено'}
-          >
-            {soundOn ? <Volume2 className="h-4 w-4 text-gold" /> : <VolumeX className="h-4 w-4 text-muted-foreground" />}
-            <span className="hidden sm:inline text-xs uppercase tracking-wider">
-              {soundOn ? 'Sound on' : 'Sound off'}
-            </span>
-          </Button>
-        }
-      />
+      <ZoneHeader zone="KITCHEN" title="KDS · Kitchen Display" subtitle={`${orders.length} active`} />
+
+      <div className="flex justify-end px-4 md:px-6 pt-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setSoundOn(s => !s)}
+          className="gap-2 border-gold/30"
+          title={soundOn ? 'Звук увімкнено' : 'Звук вимкнено'}
+        >
+          {soundOn ? <Volume2 className="h-4 w-4 text-gold" /> : <VolumeX className="h-4 w-4 text-muted-foreground" />}
+          <span className="text-xs uppercase tracking-wider">{soundOn ? 'Sound on' : 'Sound off'}</span>
+        </Button>
+      </div>
 
       {loading ? (
         <div className="flex items-center justify-center py-20 text-muted-foreground">
