@@ -320,6 +320,7 @@ const OrderCard = ({
             size="sm"
             variant="outline"
             className="flex-1 border-gold/40 text-gold hover:bg-gold/10"
+            onPointerDown={stop}
             onClick={(e) => { e.stopPropagation(); onMove(o.id, next); }}
           >
             <ArrowRight className="h-4 w-4 mr-1" />{nextLabel}
@@ -330,6 +331,7 @@ const OrderCard = ({
             size="sm"
             variant="ghost"
             className="flex-1 text-success hover:bg-success/10"
+            onPointerDown={stop}
             onClick={(e) => { e.stopPropagation(); onComplete(o.id); }}
           >
             <Check className="h-4 w-4 mr-1" />Done
