@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Plus, Users, Receipt, Split, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Plus, Users, Receipt, Split, X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useI18n } from '@/lib/i18n';
-import { initialTables, dishes, fmtUAH, Table } from '@/lib/mockData';
+import { initialTables, dishes, fmtUAH, Table, Zone } from '@/lib/mockData';
 import { ZoneHeader } from '@/components/ZoneHeader';
 import { toast } from 'sonner';
 
@@ -14,11 +14,20 @@ const statusColors: Record<Table['status'], string> = {
   payment: 'bg-info/15 border-info/50 text-info',
 };
 
+const zones: { id: Zone; labelUa: string; labelEn: string }[] = [
+  { id: 'main', labelUa: 'Основна зала', labelEn: 'Main hall' },
+  { id: 'terrace', labelUa: 'Тераса', labelEn: 'Terrace' },
+  { id: 'vip', labelUa: 'VIP', labelEn: 'VIP' },
+];
+
 const Waiter = () => {
   const { tr, lang } = useI18n();
   const [tables, setTables] = useState(initialTables);
   const [selected, setSelected] = useState<Table | null>(null);
   const [orderItems, setOrderItems] = useState<Record<string, number>>({});
+  const [zone, setZone] = useState<Zone>('main');
+
+  const visibleTables = useMemo(() => tables.filter((t) => t.zone === zone), [tables, zone]);
 
   const openTable = (t: Table) => {
     setSelected(t);
@@ -47,31 +56,49 @@ const Waiter = () => {
   };
 
   const counts = {
-    free: tables.filter(t => t.status === 'free').length,
-    occupied: tables.filter(t => t.status === 'occupied').length,
-    reserved: tables.filter(t => t.status === 'reserved').length,
+    free: visibleTables.filter(t => t.status === 'free').length,
+    occupied: visibleTables.filter(t => t.status === 'occupied').length,
+    reserved: visibleTables.filter(t => t.status === 'reserved').length,
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <ZoneHeader zone="FLOOR" title={tr.floorPlan} subtitle={`${tables.length} ${tr.tables}`} />
+      <ZoneHeader zone="FLOOR" title={tr.floorPlan} subtitle={`${visibleTables.length} ${tr.tables}`} />
 
-      {/* Status legend */}
-      <div className="px-4 md:px-8 py-5 flex flex-wrap gap-3 border-b border-border bg-card/50">
-        {(['free', 'occupied', 'reserved'] as const).map(s => (
-          <div key={s} className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 ${statusColors[s]}`}>
-            <span className="h-2 w-2 rounded-full bg-current" />
-            <span className="font-semibold text-sm">{tr[s]}</span>
-            <span className="font-display font-bold">{counts[s]}</span>
+      <div className="px-4 md:px-8 py-4 border-b border-border bg-card/50">
+        <div className="flex flex-wrap items-center gap-3 justify-between">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-muted border border-border overflow-x-auto">
+            {zones.map((z) => (
+              <button
+                key={z.id}
+                onClick={() => setZone(z.id)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
+                  zone === z.id
+                    ? 'bg-gradient-gold text-primary-foreground shadow-1'
+                    : 'text-muted-foreground hover:text-gold'
+                }`}
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                {lang === 'ua' ? z.labelUa : z.labelEn}
+              </button>
+            ))}
           </div>
-        ))}
+
+          <div className="flex flex-wrap gap-3">
+            {(['free', 'occupied', 'reserved'] as const).map(s => (
+              <div key={s} className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 ${statusColors[s]}`}>
+                <span className="h-2 w-2 rounded-full bg-current" />
+                <span className="font-semibold text-sm">{tr[s]}</span>
+                <span className="font-display font-bold">{counts[s]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Floor plan — grid on mobile, absolute positioning on md+ */}
       <div className="p-4 md:p-8">
-        {/* Mobile: simple grid */}
         <div className="md:hidden grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {tables.map(t => (
+          {visibleTables.map(t => (
             <button
               key={t.id}
               onClick={() => openTable(t)}
@@ -86,10 +113,11 @@ const Waiter = () => {
           ))}
         </div>
 
-        {/* Tablet/Desktop: absolute floor plan */}
-        <div className="hidden md:block relative bg-card border-2 border-dashed border-border rounded-3xl p-6 min-h-[600px]" style={{ backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
-          <div className="absolute top-4 left-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">{lang === 'ua' ? 'Зал · Поверх 1' : 'Hall · Floor 1'}</div>
-          {tables.map(t => (
+        <div className="hidden md:block relative bg-card border-2 border-dashed border-border rounded-3xl p-6 min-h-[600px] overflow-hidden" style={{ backgroundImage: 'radial-gradient(hsl(var(--border)) 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+          <div className="absolute top-4 left-4 text-xs text-muted-foreground font-mono uppercase tracking-widest">
+            {(lang === 'ua' ? zones.find((z) => z.id === zone)?.labelUa : zones.find((z) => z.id === zone)?.labelEn)} · {lang === 'ua' ? 'Поверх 1' : 'Floor 1'}
+          </div>
+          {visibleTables.map(t => (
             <button
               key={t.id}
               onClick={() => openTable(t)}
@@ -111,7 +139,6 @@ const Waiter = () => {
         </div>
       </div>
 
-      {/* Table dialog */}
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-w-3xl w-[calc(100vw-1.5rem)] max-h-[92vh] overflow-auto p-4 md:p-6">
           {selected && (
@@ -124,7 +151,6 @@ const Waiter = () => {
               </DialogHeader>
 
               <div className="grid md:grid-cols-2 gap-4 mt-4">
-                {/* Menu */}
                 <div>
                   <h3 className="font-display font-bold mb-2">{tr.menu}</h3>
                   <div className="space-y-1.5 max-h-96 overflow-auto pr-2">
@@ -145,7 +171,6 @@ const Waiter = () => {
                   </div>
                 </div>
 
-                {/* Order */}
                 <div>
                   <h3 className="font-display font-bold mb-2">{tr.newOrder}</h3>
                   <div className="bg-secondary rounded-2xl p-4 min-h-[200px]">
@@ -200,3 +225,4 @@ const Waiter = () => {
 };
 
 export default Waiter;
+
