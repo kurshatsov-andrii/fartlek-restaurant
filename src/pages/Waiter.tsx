@@ -42,10 +42,30 @@ const Waiter = () => {
     const d = dishes.find(x => x.id === id); return s + (d ? d.price * q : 0);
   }, 0);
 
-  const sendToKitchen = () => {
+  const sendToKitchen = async () => {
     if (!selected || Object.keys(orderItems).length === 0) return;
+    const code = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const tableNum = parseInt(String(selected.id).replace(/\D/g, ''), 10) || 0;
+    const { data: order, error } = await supabase
+      .from('kitchen_orders')
+      .insert({ code, table_number: tableNum, status: 'new' })
+      .select('id')
+      .single();
+    if (error || !order) {
+      toast.error(error?.message || 'Failed to create order');
+      return;
+    }
+    const items = Object.entries(orderItems).map(([id, qty]) => {
+      const d = dishes.find(x => x.id === id)!;
+      return { order_id: order.id, name: d.name[lang], qty };
+    });
+    const { error: itemsErr } = await supabase.from('kitchen_order_items').insert(items);
+    if (itemsErr) {
+      toast.error(itemsErr.message);
+      return;
+    }
     setTables(ts => ts.map(t => t.id === selected.id ? { ...t, status: 'occupied', guests: t.guests || 2, total: (t.total || 0) + orderTotal } : t));
-    toast.success(`${tr.newOrder} · ${tr.table} №${selected.id}`);
+    toast.success(`${tr.newOrder} · ${tr.table} №${selected.id} · ${code}`);
     setSelected(null);
   };
 
