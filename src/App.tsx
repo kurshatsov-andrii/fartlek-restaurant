@@ -13,6 +13,7 @@ import Customer from "./pages/Customer.tsx";
 import Waiter from "./pages/Waiter.tsx";
 import Kitchen from "./pages/Kitchen.tsx";
 import Admin from "./pages/Admin.tsx";
+import FloorMap from "./pages/FloorMap.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/waiter" element={<ProtectedRoute zone="waiter"><Waiter /></ProtectedRoute>} />
+                <Route path="/floor-map" element={<ProtectedRoute zone="waiter"><FloorMap /></ProtectedRoute>} />
                 <Route path="/kitchen" element={<ProtectedRoute zone="kitchen"><Kitchen /></ProtectedRoute>} />
                 <Route path="/admin" element={<ProtectedRoute zone="admin"><Admin /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
